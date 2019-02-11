@@ -1,6 +1,6 @@
 {
   "name": "@hypertype/domain",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "",
   "main": "dist/esm/common/index.js",
   "typings": "dist/typings/common/index.d.ts",
