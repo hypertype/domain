@@ -1,0 +1,46 @@
+{
+  "name": "@hypertype/infr",
+  "version": "1.1.0",
+  "description": "",
+  "main": "dist/esm/common/index.js",
+  "typings": "dist/typings/common/index.d.ts",
+  "scripts": {
+    "build": "tsc -b --watch",
+    "build:node": "cd node && tsc -b --watch",
+    "build:browser": "cd browser && tsc -b --watch",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hypertype/infr.git"
+  },
+  "files": [
+    "dist",
+    "tsconfig.json"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hypertype/infr/issues"
+  },
+  "homepage": "https://github.com/hypertype/infr#readme",
+  "directories": {
+    "test": "tests"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "globals": {
+      "ts-jest": {
+        "tsConfig": "tests/tsconfig.json"
+      }
+    }
+  },
+  "bundleDependencies": [],
+  "dependencies": {
+    "@hypertype/core": "^1.2.1"
+  },
+  "devDependencies": {
+    "@hypertype/tools": "latest"
+  }
+}
