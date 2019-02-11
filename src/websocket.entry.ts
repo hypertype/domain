@@ -1,17 +1,13 @@
-import {map} from "rxjs/internal/operators/map";
+import {catchError, filter, map, of, ReplaySubject, Serializer, shareReplay, tap} from "@hypertype/core";
 import {Model} from "./model";
-import {Container} from "@so/di";
-import {Serializer} from "@so/utils";
-import {shareReplay} from "rxjs/internal/operators/shareReplay";
-import {of, ReplaySubject} from "rxjs";
-import {catchError, filter, tap} from "rxjs/operators";
 
 export class WebsocketEntry {
 
 
-    constructor(private model: Model<any, any>) {
-    }
-
+    public Output$ = this.model.State$.pipe(
+        map(s => Serializer.serialize(s)),
+        shareReplay(1)
+    );
     private InputSubject$ = new ReplaySubject();
     private Input$ = this.InputSubject$.asObservable().pipe(
         map((d: string) => JSON.parse(d)),
@@ -21,12 +17,8 @@ export class WebsocketEntry {
         shareReplay(1),
     );
 
-
-    public Output$ = this.model.State$.pipe(
-        map(s => Serializer.serialize(s)),
-        shareReplay(1)
-    );
-
+    constructor(private model: Model<any, any>) {
+    }
 
     public onMessage = data => {
         const action = Serializer.deserialize(data);

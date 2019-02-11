@@ -1,13 +1,11 @@
-import {ModelStream, IAction, IInvoker} from "../model.stream";
-import {fromEvent, Observable} from "rxjs";
-import {map} from "rxjs/operators";
-import {Serializer} from "@so/utils";
-import {InjectionToken} from "@so/di";
+import {IAction, IInvoker, ModelStream} from "../model.stream";
+import {fromEvent, InjectionToken, map, Observable, Serializer} from "@hypertype/core";
 
 
 export const UrlToken = new InjectionToken('webworker');
 
 export class WebWorkerModelStream<TState, TActions> extends ModelStream<TState, TActions> {
+    public State$: Observable<TState>;
     private worker: Worker;
 
     constructor(webSocketPath: string) {
@@ -19,8 +17,6 @@ export class WebWorkerModelStream<TState, TActions> extends ModelStream<TState, 
             map(s => Serializer.deserialize(s) as TState),
         );
     }
-
-    public State$: Observable<TState>;
 
     public Action: IInvoker<TActions> = (action: IAction<TActions>) => {
         this.worker.postMessage(Serializer.serialize(action));

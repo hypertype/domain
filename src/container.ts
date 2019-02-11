@@ -1,6 +1,6 @@
 import {UrlToken, WebWorkerModelStream} from "./streams/web-worker-model.stream";
 import {ModelStream} from "./model.stream";
-import {Container} from "@so/di";
+import {Container} from "@hypertype/core";
 import {SharedWorkerModelStream} from "./streams/shared-worker-model.stream";
 import {SimpleModelStream} from "./streams/simple-model.stream";
 import {WebSocketModelStream} from "./streams/web-socket-model.stream";

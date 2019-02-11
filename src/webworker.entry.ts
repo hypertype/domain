@@ -1,25 +1,16 @@
-import {map} from "rxjs/internal/operators/map";
+import {Container, map, Serializer, shareReplay} from "@hypertype/core";
 import {Model} from "./model";
-import {Container} from "@so/di";
-import {Serializer} from "@so/utils";
-import {shareReplay} from "rxjs/internal/operators/shareReplay";
 
 export class WebworkerEntry {
-
-    constructor(private model: Model<any, any>) {
-
-    }
 
     public Output$ = this.model.State$.pipe(
         map(Serializer.serialize),
         shareReplay(1)
     );
 
-    public onMessage = (e: MessageEvent) => {
-        if (typeof e.data === "object")
-            return;
-        this.model.Invoke(Serializer.deserialize(e.data));
-    };
+    constructor(private model: Model<any, any>) {
+
+    }
 
     static Start(self, container: Container) {
 
@@ -45,4 +36,10 @@ export class WebworkerEntry {
             };
         }
     }
+
+    public onMessage = (e: MessageEvent) => {
+        if (typeof e.data === "object")
+            return;
+        this.model.Invoke(Serializer.deserialize(e.data));
+    };
 }

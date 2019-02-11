@@ -1,11 +1,8 @@
-import {Observable} from "rxjs/internal/Observable";
-import {fromEvent} from "rxjs/internal/observable/fromEvent";
-import {map} from "rxjs/internal/operators/map";
-import {Serializer} from "@so/utils";
-import {ModelStream, IAction, IInvoker} from "../model.stream";
-import {InjectionToken} from "@so/di";
+import {fromEvent, map, Observable, Serializer} from "@hypertype/core";
+import {IAction, IInvoker, ModelStream} from "../model.stream";
 
 export class WebSocketModelStream<TState, TActions> extends ModelStream<TState, TActions> {
+    public State$: Observable<TState>;
     private ws: WebSocket;
 
     constructor(webSocketPath: string) {
@@ -18,8 +15,6 @@ export class WebSocketModelStream<TState, TActions> extends ModelStream<TState, 
             map(s => Serializer.deserialize(s) as TState),
         );
     }
-
-    public State$: Observable<TState>;
 
     public Action: IInvoker<TActions> = (action: IAction<TActions>) => {
         this.ws.send(Serializer.serialize(action));
