@@ -1,9 +1,9 @@
 {
   "name": "@hypertype/domain",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
-  "main": "dist/esm/common/index.js",
-  "typings": "dist/typings/common/index.d.ts",
+  "main": "dist/esm/index.js",
+  "typings": "dist/typings/index.d.ts",
   "scripts": {
     "build": "tsc -b --watch",
     "test": "jest"
