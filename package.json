@@ -1,13 +1,11 @@
 {
-  "name": "@hypertype/infr",
-  "version": "1.1.0",
+  "name": "@hypertype/domain",
+  "version": "1.0.0",
   "description": "",
   "main": "dist/esm/common/index.js",
   "typings": "dist/typings/common/index.d.ts",
   "scripts": {
     "build": "tsc -b --watch",
-    "build:node": "cd node && tsc -b --watch",
-    "build:browser": "cd browser && tsc -b --watch",
     "test": "jest"
   },
   "repository": {

@@ -1,4 +1,4 @@
-import {Observable} from "rxjs/internal/Observable";
+import {Observable} from "@hypertype/core";
 
 export abstract class ModelStream<TState, TActions> {
     Action: IInvoker<TActions>;

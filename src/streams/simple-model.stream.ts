@@ -1,9 +1,11 @@
-import {Observable} from "rxjs/internal/Observable";
+import {Observable} from "@hypertype/core";
 import {Model} from "../model";
-import {ModelStream, IAction, IInvoker} from "../model.stream";
+import {IAction, IInvoker, ModelStream} from "../model.stream";
 
 
 export class SimpleModelStream<TState, TActions> extends ModelStream<TState, TActions> {
+    public State$: Observable<TState> = this.model.State$;
+
     constructor(private model: Model<TState, TActions>) {
         super();
     }
@@ -11,7 +13,5 @@ export class SimpleModelStream<TState, TActions> extends ModelStream<TState, TAc
     public Action: IInvoker<TActions> = (action: IAction<TActions>) => {
         this.model.Invoke(action);
     };
-
-    public State$: Observable<TState> = this.model.State$;
 }
 

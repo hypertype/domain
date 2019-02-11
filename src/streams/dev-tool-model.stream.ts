@@ -1,6 +1,6 @@
 import {IAction, IInvoker, ModelStream} from "../model.stream";
-import {Observable} from "rxjs";
-import {shareReplay, tap} from "rxjs/operators";
+import {Observable} from "@hypertype/core";
+import {shareReplay, tap} from "@hypertype/core";
 import "redux-devtools-extension";
 
 

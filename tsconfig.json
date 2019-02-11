@@ -17,5 +17,11 @@
       "path": "../core"
     }
   ],
-  "include": ["common"]
+  "include": [
+    "**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
