@@ -15,7 +15,7 @@ export class ModelProxy<TState, TActions extends IActions<TActions>> {
                     method: key,
                     args: args
                 })
-            }));
+            }) as any);
         }
     }) as TActions;
 

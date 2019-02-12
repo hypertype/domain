@@ -1,11 +1,14 @@
 {
   "name": "@hypertype/domain",
-  "version": "1.2.0",
+  "version": "1.2.4",
   "description": "",
-  "main": "dist/esm/common/index.js",
-  "typings": "dist/typings/common/index.d.ts",
+  "module": "dist/esm/index.js",
+  "main": "dist/bundle/index.js",
+  "typings": "dist/typings/index.d.ts",
   "scripts": {
+    "bundle": "hypertype",
     "build": "tsc -b --watch",
+    "deploy": "npm publish",
     "test": "jest"
   },
   "repository": {
@@ -34,11 +37,16 @@
       }
     }
   },
-  "bundleDependencies": [],
-  "dependencies": {
-    "@hypertype/core": "^1.2.1"
+  "bundleDependencies": [
+  ],
+  "peerDependencies": {
+    "@hypertype/core": "^1.2.3",
+    "redux-devtools-extension": "^2.13.8"
   },
   "devDependencies": {
-    "@hypertype/tools": "latest"
+    "@hypertype/core": "^1.2.3",
+    "@hypertype/tools": "^1.0.13"
+  },
+  "dependencies": {
   }
 }
