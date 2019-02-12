@@ -1,9 +1,9 @@
-import {Container, map, Serializer, shareReplay} from "@hypertype/core";
+import {Container, map, Observable, Serializer, shareReplay} from "@hypertype/core";
 import {Model} from "./model";
 
 export class WebworkerEntry {
 
-    public Output$ = this.model.State$.pipe(
+    public Output$: Observable<any> = this.model.State$.pipe(
         map(Serializer.serialize),
         shareReplay(1)
     );
