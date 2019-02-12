@@ -8,7 +8,7 @@
   "scripts": {
     "bundle": "hypertype",
     "build": "tsc -b --watch",
-    "deploy": "npm publish",
+    "deploy": "npm version patch && npm publish",
     "test": "jest"
   },
   "repository": {
