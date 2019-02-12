@@ -1,6 +1,6 @@
 {
   "name": "@hypertype/domain",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "",
   "module": "dist/esm/index.js",
   "main": "dist/bundle/index.js",
@@ -37,8 +37,7 @@
       }
     }
   },
-  "bundleDependencies": [
-  ],
+  "bundleDependencies": [],
   "peerDependencies": {
     "@hypertype/core": "^1.2.3",
     "redux-devtools-extension": "^2.13.8"
@@ -47,6 +46,5 @@
     "@hypertype/core": "^1.2.3",
     "@hypertype/tools": "^1.0.13"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
