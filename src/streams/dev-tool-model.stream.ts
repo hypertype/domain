@@ -1,24 +1,23 @@
 import {IAction, IInvoker, ModelStream} from "../model.stream";
-import {Observable} from "@hypertype/core";
-import {shareReplay, tap} from "@hypertype/core";
-import "redux-devtools-extension";
-
+import {Observable, shareReplay, tap} from "@hypertype/core";
+import {StateLogger} from "@hypertype/infr";
 
 export class DevToolModelStream<TState, TActions> extends ModelStream<TState, TActions> {
     private lastState: TState;
-    private devTools: any;
+    public State$: Observable<TState> = this.stream.State$.pipe(
+        tap(state => {
+            this.lastState = state;
+            this.stateLogger.send({type: 'domain.new-state', payload: null}, state);
+        }),
+        shareReplay(1)
+    );
 
-
-    constructor(private stream: ModelStream<TState, TActions>) {
+    constructor(private stream: ModelStream<TState, TActions>, private stateLogger: StateLogger) {
         super();
-
-        this.devTools = window['__REDUX_DEVTOOLS_EXTENSION__'];
-        this.devTools.connect();
     }
 
-
     public Action: IInvoker<TActions> = (action: IAction<TActions>) => {
-        this.devTools.send({
+        this.stateLogger.send({
             type: [
                 ...action.path,
                 action.method
@@ -27,14 +26,6 @@ export class DevToolModelStream<TState, TActions> extends ModelStream<TState, TA
         }, this.lastState);
         this.stream.Action(action);
     };
-
-    public State$: Observable<TState> = this.stream.State$.pipe(
-        tap(state => {
-            this.lastState = state;
-            this.devTools.send('-----', state);
-        }),
-        shareReplay(1)
-    );
 
 
 }
