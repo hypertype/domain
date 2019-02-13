@@ -8,6 +8,7 @@ import {ModelProxy} from "./model.proxy";
 import {Model} from "./model";
 import {DevToolModelStream} from "./streams/dev-tool-model.stream";
 import {WebsocketEntry} from "./websocket.entry";
+import {StateLogger} from "@hypertype/infr";
 
 
 const BaseContainer = new Container();
@@ -28,7 +29,7 @@ export const ProxyDomainContainer = {
         container.provide(BaseContainer);
         if (devTools) {
             container.provide([
-                {provide: ModelStream, useClass: DevToolModelStream, deps: [SharedWorkerModelStream]},
+                {provide: ModelStream, useClass: DevToolModelStream, deps: [SharedWorkerModelStream, StateLogger]},
                 {provide: SharedWorkerModelStream, deps: [UrlToken]},
                 {provide: UrlToken, useValue: url},
             ]);
@@ -45,7 +46,7 @@ export const ProxyDomainContainer = {
         container.provide(BaseContainer);
         if (devTools) {
             container.provide([
-                {provide: ModelStream, useClass: DevToolModelStream, deps: [WebWorkerModelStream]},
+                {provide: ModelStream, useClass: DevToolModelStream, deps: [WebWorkerModelStream, StateLogger]},
                 {provide: WebWorkerModelStream, deps: [UrlToken]},
                 {provide: UrlToken, useValue: url},
             ]);
@@ -62,7 +63,7 @@ export const ProxyDomainContainer = {
         container.provide(BaseContainer);
         if (devTools) {
             container.provide([
-                {provide: ModelStream, useClass: DevToolModelStream, deps: [SimpleModelStream]},
+                {provide: ModelStream, useClass: DevToolModelStream, deps: [SimpleModelStream, StateLogger]},
                 {provide: SimpleModelStream, deps: [Model]},
             ]);
         } else {
@@ -77,7 +78,7 @@ export const ProxyDomainContainer = {
         container.provide(BaseContainer);
         if (devTools) {
             container.provide([
-                {provide: ModelStream, useClass: DevToolModelStream, deps: [WebSocketModelStream]},
+                {provide: ModelStream, useClass: DevToolModelStream, deps: [WebSocketModelStream, StateLogger]},
                 {provide: WebSocketModelStream, deps: [UrlToken]},
                 {provide: UrlToken, useValue: url},
             ]);
