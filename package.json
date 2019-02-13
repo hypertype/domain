@@ -43,8 +43,8 @@
     "redux-devtools-extension": "^2.13.8"
   },
   "devDependencies": {
-    "@hypertype/core": "^1.2.3",
-    "@hypertype/tools": "^1.0.13"
+    "@hypertype/core": "^1.2.5",
+    "@hypertype/tools": "^1.0.18"
   },
   "dependencies": {}
 }
