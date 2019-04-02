@@ -4,6 +4,7 @@
     "baseUrl": ".",
     "outDir": "./dist/esm",
     "declarationDir": "./dist/typings",
+    "declaration": true,
     "noEmitOnError": true,
     "target": "es5",
     "composite": true,
@@ -22,6 +23,7 @@
     "**/*.ts"
   ],
   "exclude": [
+    "tests",
     "node_modules",
     "dist"
   ]

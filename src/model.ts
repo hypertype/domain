@@ -1,19 +1,35 @@
-import {map, Observable, ReplaySubject, shareReplay, startWith, Subject} from "@hypertype/core";
+import {
+    first,
+    map,
+    merge, mergeMap,
+    Observable,
+    ReplaySubject,
+    shareReplay,
+    startWith,
+    Subject,
+    switchMap,
+    tap
+} from "@hypertype/core";
 import {IInvoker} from "./model.stream";
 
 export abstract class Model<TState, TActions> implements IModel<TState, TActions> {
 
-    protected StateSubject$: Subject<void> = new ReplaySubject<void>();
+    protected StateSubject$: Subject<void> = new Subject<void>();
 
     public State$: Observable<TState> = this.StateSubject$.asObservable().pipe(
         startWith(null),
         map(() => this.ToJSON()),
-        shareReplay(1)
+        shareReplay(1),
     );
 
+    private InvokeSubject$ = new Subject<{path;method;args}>();
+    private Invoke$ = this.InvokeSubject$.pipe(
+        switchMap(action => this.GetSubActions(...(action.path || []))[action.method](...action.args)),
+        tap(() => this.Update())
+    ).subscribe();
+
     public Invoke: IInvoker<TActions> = async action => {
-        await this.GetSubActions(...(action.path || []))[action.method](...action.args);
-        this.Update();
+        this.InvokeSubject$.next(action);
     };
 
     public abstract ToJSON(): TState;

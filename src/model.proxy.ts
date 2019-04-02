@@ -1,20 +1,28 @@
-import {map, Observable} from "@hypertype/core";
+import {map, mergeMap, Observable, shareReplay, startWith, Subject, switchMap, take, tap} from "@hypertype/core";
 import {ModelStream} from "./model.stream";
 import {IActions} from "./model";
 
 export class ModelProxy<TState, TActions extends IActions<TActions>> {
 
-    public State$: Observable<TState> = this.stream.State$.pipe(
+    private ActionSubject = new Subject();
+
+    public State$: Observable<TState> = this.ActionSubject.pipe(
+        startWith(null),
+        switchMap(_ => this.stream.State$),
         map(state => this.GetSubState(state, ...this.path)),
+        shareReplay(1),
     );
+
     public Actions: TActions = new Proxy({}, {
         get: (target: TActions, key: keyof TActions, receiver) => {
-            return target[key] || (target[key] = ((...args) => {
+            return target[key] || (target[key] = (async (...args) => {
+                this.ActionSubject.next();
                 this.stream.Action({
                     path: this.path,
                     method: key,
                     args: args
-                })
+                });
+                await this.State$.pipe(take(2)).toPromise();
             }) as any);
         }
     }) as TActions;
@@ -22,10 +30,11 @@ export class ModelProxy<TState, TActions extends IActions<TActions>> {
     constructor(protected stream: ModelStream<TState, TActions>, private path = []) {
     }
 
-    protected GetSubProxy<UState, UActions extends IActions<UActions>>(constructor: any = ModelProxy, ...path: any[]): ModelProxy<UState, UActions> {
+    protected GetSubProxy<UState, UActions extends IActions<UActions>>(constructor: any = ModelProxy, path: keyof TState, ...paths: any[]): ModelProxy<UState, UActions> {
         return new constructor(this.stream.SubStream<UState, UActions>(), [
             ...this.path,
-            ...path
+            path,
+            ...paths
         ]);
     }
 
