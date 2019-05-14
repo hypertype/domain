@@ -16,15 +16,16 @@ export class DevToolModelStream<TState, TActions> extends ModelStream<TState, TA
         super();
     }
 
-    public Action: IInvoker<TActions> = (action: IAction<TActions>) => {
+    public Action: IInvoker<TActions> = async (action: IAction<TActions>) => {
+        const result = await this.stream.Action(action);
         this.stateLogger.send({
             type: [
                 ...action.path,
                 action.method
             ].join(':'),
             payload: action.args
-        }, this.lastState);
-        this.stream.Action(action);
+        }, result || this.lastState);
+        return result;
     };
 
 

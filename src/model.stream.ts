@@ -11,7 +11,7 @@ export abstract class ModelStream<TState, TActions> {
 
 
 export interface IInvoker<TActions> {
-    (action: IAction<TActions>): void;
+    (action: IAction<TActions>): any;
 }
 
 export type IAction<TActions> = {

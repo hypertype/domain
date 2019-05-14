@@ -1,9 +1,14 @@
-import {Container, map, Observable, Serializer, shareReplay} from "@hypertype/core";
+import {Container, map, merge, Observable, ReplaySubject, Serializer, shareReplay} from "@hypertype/core";
 import {Model} from "./model";
 
 export class WebworkerEntry {
 
-    public Output$: Observable<any> = this.model.State$.pipe(
+    private Responses$ = new ReplaySubject();
+
+    public Output$: Observable<any> = merge(
+        this.model.State$.pipe(map(d => ({state: d}))),
+        this.Responses$.asObservable()
+    ).pipe(
         map(Serializer.serialize),
         shareReplay(1)
     );
@@ -20,7 +25,11 @@ export class WebworkerEntry {
         if (self.postMessage) {
             self.addEventListener('message', service.onMessage);
             service.Output$.subscribe(d => {
-                self.postMessage(d)
+                try {
+                    self.postMessage(d)
+                }catch (e) {
+                    console.error(`Failed to sent via web worker`, d);
+                }
             });
         }
 
@@ -38,8 +47,17 @@ export class WebworkerEntry {
     }
 
     public onMessage = (e: MessageEvent) => {
-        if (typeof e.data === "object")
-            return;
-        this.model.Invoke(Serializer.deserialize(e.data));
+        // if (typeof e.data === "object")
+        //     return;
+        const request = Serializer.deserialize(e.data);
+        this.model.Invoke(request)
+            .then(result => this.Responses$.next({
+                response: result,
+                requestId: request._id
+            }))
+            .catch(e => this.Responses$.next({
+                error: e,
+                requestId: request._id
+            }));
     };
 }

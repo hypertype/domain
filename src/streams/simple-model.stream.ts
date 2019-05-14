@@ -11,7 +11,7 @@ export class SimpleModelStream<TState, TActions> extends ModelStream<TState, TAc
     }
 
     public Action: IInvoker<TActions> = (action: IAction<TActions>) => {
-        this.model.Invoke(action);
+        return this.model.Invoke(action);
     };
 }
 

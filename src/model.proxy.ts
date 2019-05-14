@@ -17,12 +17,17 @@ export class ModelProxy<TState, TActions extends IActions<TActions>> {
         get: (target: TActions, key: keyof TActions, receiver) => {
             return target[key] || (target[key] = (async (...args) => {
                 this.ActionSubject.next();
-                this.stream.Action({
-                    path: this.path,
-                    method: key,
-                    args: args
-                });
-                await this.State$.pipe(take(2)).toPromise();
+                try {
+                    const res = await this.stream.Action({
+                        path: this.path,
+                        method: key,
+                        args: args
+                    });
+                    await this.State$.pipe(take(1)).toPromise();
+                    return res;
+                }catch (e) {
+                    return Promise.reject(e);
+                }
             }) as any);
         }
     }) as TActions;
