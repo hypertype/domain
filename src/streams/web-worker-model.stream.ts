@@ -12,6 +12,14 @@ export class WebWorkerModelStream<TState, TActions> extends ModelStream<TState, 
     constructor(webSocketPath: string) {
         super();
         this.worker = this.createWorker(webSocketPath);
+        this.Input$ = fromEvent<MessageEvent>(this.worker, 'message').pipe(
+            // tap(console.log),
+            map(e => e.data),
+        );
+        this.State$ = this.Input$.pipe(
+            map(d => d.state),
+            filter(Fn.Ib),
+        )
     }
 
     protected createWorker(path){

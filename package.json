@@ -39,6 +39,7 @@
       }
     }
   },
+
   "bundleDependencies": [],
   "peerDependencies": {
     "@hypertype/infr": "^2.0.0",
