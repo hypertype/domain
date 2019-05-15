@@ -1,4 +1,4 @@
-import {fromEvent, map, Observable, Serializer} from "@hypertype/core";
+import {fromEvent, map, Observable} from "@hypertype/core";
 import {IAction, IInvoker, ModelStream} from "../model.stream";
 
 export class WebSocketModelStream<TState, TActions> extends ModelStream<TState, TActions> {
@@ -12,12 +12,12 @@ export class WebSocketModelStream<TState, TActions> extends ModelStream<TState, 
         this.State$ = fromEvent<MessageEvent>(this.ws, 'message').pipe(
             // tap(console.log),
             map(e => e.data),
-            map(s => Serializer.deserialize(s) as TState),
+            map(s => JSON.parse(s) as TState),
         );
     }
 
     public Action: IInvoker<TActions> = (action: IAction<TActions>) => {
-        this.ws.send(Serializer.serialize(action));
+        this.ws.send(JSON.stringify(action));
     };
 
 }

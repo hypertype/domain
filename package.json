@@ -6,7 +6,9 @@
   "bundle": "dist/bundle/index.js",
   "typings": "dist/typings/index.d.ts",
   "scripts": {
-    "bundle": "hypertype",
+    "bundle": "hypertype lib",
+    "bundle:prod": "hypertype lib --prod",
+    "bundle:prod:stats": "hypertype lib --prod --stats",
     "build": "tsc -b --watch",
     "deploy": "npm version patch && npm publish",
     "test": "jest"
@@ -43,14 +45,14 @@
     "@hypertype/core": "^2.0.0"
   },
   "devDependencies": {
-    "@hypertype/infr": "^2.0.0",
-    "@hypertype/core": "^2.0.0",
-    "@hypertype/tools": "^2.0.0"
+    "@hypertype/core": "^2.0.11",
+    "@hypertype/infr": "^2.0.4",
+    "@hypertype/tools": "^2.0.5"
   },
   "dependencies": {},
   "hypertype": {
     "lib": {
-      "index": "index.ts"
+      "index": "./index.ts"
     }
   }
 }

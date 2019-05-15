@@ -1,17 +1,5 @@
 import {IAction, IInvoker, ModelStream} from "../model.stream";
-import {
-    filter,
-    first,
-    Fn,
-    fromEvent,
-    InjectionToken,
-    map,
-    mergeMap,
-    Observable,
-    of,
-    Serializer,
-    throwError
-} from "@hypertype/core";
+import {filter, first, Fn, fromEvent, InjectionToken, map, mergeMap, Observable, of, throwError} from "@hypertype/core";
 
 declare const OffscreenCanvas;
 export const UrlToken = new InjectionToken('webworker');
@@ -23,24 +11,19 @@ export class WebWorkerModelStream<TState, TActions> extends ModelStream<TState, 
 
     constructor(webSocketPath: string) {
         super();
-        this.worker = new Worker(webSocketPath);
-        this.Input$ = fromEvent<MessageEvent>(this.worker, 'message').pipe(
-            // tap(console.log),
-            map(e => e.data),
-            map(s => Serializer.deserialize(s) as TState),
-        );
-        this.State$ = this.Input$.pipe(
-            map(d => d.state),
-            filter(Fn.Ib),
-        )
+        this.worker = this.createWorker(webSocketPath);
+    }
+
+    protected createWorker(path){
+        return new Worker(path);
     }
 
     public Action: IInvoker<TActions> = (action: IAction<TActions>) => {
         const id = +performance.now();
-        this.worker.postMessage(Serializer.serialize({
+        this.worker.postMessage({
             ...action,
             _id: id
-        }), action.args.filter(a => {
+        }, action.args.filter(a => {
             return (a instanceof OffscreenCanvas);
         }));
         return this.Input$.pipe(

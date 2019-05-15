@@ -1,4 +1,4 @@
-import {Container, map, merge, Observable, ReplaySubject, Serializer, shareReplay} from "@hypertype/core";
+import {Container, map, merge, Observable, ReplaySubject,  shareReplay} from "@hypertype/core";
 import {Model} from "./model";
 
 export class WebworkerEntry {
@@ -9,7 +9,6 @@ export class WebworkerEntry {
         this.model.State$.pipe(map(d => ({state: d}))),
         this.Responses$.asObservable()
     ).pipe(
-        map(Serializer.serialize),
         shareReplay(1)
     );
 
@@ -49,8 +48,8 @@ export class WebworkerEntry {
     public onMessage = (e: MessageEvent) => {
         // if (typeof e.data === "object")
         //     return;
-        const request = Serializer.deserialize(e.data);
-        this.model.Invoke(request)
+        const request = e.data;
+        this.model.Invoke(e.data)
             .then(result => this.Responses$.next({
                 response: result,
                 requestId: request._id
