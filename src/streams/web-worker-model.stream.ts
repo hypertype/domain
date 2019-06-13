@@ -32,7 +32,7 @@ export class WebWorkerModelStream<TState, TActions> extends ModelStream<TState, 
             ...action,
             _id: id
         }, action.args.filter(a => {
-            return (a instanceof OffscreenCanvas);
+            return OffscreenCanvas && (a instanceof OffscreenCanvas);
         }));
         return this.Input$.pipe(
             filter(d => d.requestId == id),

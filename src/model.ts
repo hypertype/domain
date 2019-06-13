@@ -18,13 +18,20 @@ export abstract class Model<TState, TActions> implements IModel<TState, TActions
             try {
                 const res: any = this.GetSubActions(...(action.path || []))[action.method](...action.args);
                 if (res.then) {
-                    return res.then(resolve).catch(reject);
+                    return res.then(result => {
+                        // if (!result)
+                            // this.Update();
+                        resolve(result)
+                    }).catch(e => {
+                        // throw e;
+                    });
                 } else {
                     resolve(res);
                     return res;
                 }
-            }catch (e) {
+            } catch (e) {
                 reject(e);
+                // throw e;
             }
         }),
         tap(() => this.Update())
