@@ -25,7 +25,7 @@ export class WebWorkerModelStream<TState, TActions> extends ModelStream<TState, 
         )
     }
 
-    protected createWorker(path){
+    protected createWorker(path) {
         return new Worker(path);
     }
 
@@ -35,9 +35,9 @@ export class WebWorkerModelStream<TState, TActions> extends ModelStream<TState, 
         this.worker.postMessage({
             ...action,
             _id: id
-        }, action.args.filter(a => {
+        }, ('OffscreenCanvas' in window) ? action.args.filter(a => {
             return (a instanceof OffscreenCanvas);
-        }));
+        }) : []);
         return this.Input$.pipe(
             filter(d => d.requestId == id),
             mergeMap(d => d.error ? throwError(d.error) : of(d.response)),

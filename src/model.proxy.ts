@@ -1,4 +1,4 @@
-import {map, mergeMap, Observable, shareReplay, startWith, Subject, switchMap, take, tap} from "@hypertype/core";
+import {map, Observable, shareReplay, startWith, Subject, switchMap, take, tap} from "@hypertype/core";
 import {ModelStream} from "./model.stream";
 import {IActions} from "./model";
 
@@ -6,9 +6,13 @@ export class ModelProxy<TState, TActions extends IActions<TActions>> {
 
     private ActionSubject = new Subject();
 
+    private ShareState$ = this.stream.State$.pipe(
+        shareReplay(1)
+    );
+
     public State$: Observable<TState> = this.ActionSubject.pipe(
         startWith(null),
-        switchMap(_ => this.stream.State$),
+        switchMap(_ => this.ShareState$),
         map(state => this.GetSubState(state, ...this.path)),
         shareReplay(1),
     );
@@ -16,16 +20,18 @@ export class ModelProxy<TState, TActions extends IActions<TActions>> {
     public Actions: TActions = new Proxy({}, {
         get: (target: TActions, key: keyof TActions, receiver) => {
             return target[key] || (target[key] = (async (...args) => {
-                this.ActionSubject.next();
                 try {
                     const res = await this.stream.Action({
                         path: this.path,
                         method: key,
                         args: args
                     });
+                    if (!res)
+                        this.ActionSubject.next();
+
                     await this.State$.pipe(take(1)).toPromise();
                     return res;
-                }catch (e) {
+                } catch (e) {
                     return Promise.reject(e);
                 }
             }) as any);
