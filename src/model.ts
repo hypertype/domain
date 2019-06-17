@@ -23,7 +23,7 @@ export abstract class Model<TState, TActions> implements IModel<TState, TActions
                             // this.Update();
                         resolve(result)
                     }).catch(e => {
-                        // throw e;
+                        throw e;
                     });
                 } else {
                     resolve(res);
