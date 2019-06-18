@@ -23,6 +23,8 @@ export class WebworkerEntry {
         const service = new WebworkerEntry(aggregate);
         if (self.postMessage) {
             self.addEventListener('message', service.onMessage);
+
+            // => из Worker отправляю ответ -> в Browser Main
             service.Output$.subscribe(d => {
                 try {
                     self.postMessage(d)
@@ -32,7 +34,7 @@ export class WebworkerEntry {
             });
         }
 
-// shared worker
+        // shared worker
         if ('onconnect' in self) {
             self['onconnect'] = function (e) {
                 const port = e.ports[0];
@@ -45,9 +47,8 @@ export class WebworkerEntry {
         }
     }
 
+    // => из Browser Main пришла задача -> в Worker
     public onMessage = (e: MessageEvent) => {
-        // if (typeof e.data === "object")
-        //     return;
         const request = e.data;
         this.model.Invoke(e.data)
             .then(result => this.Responses$.next({
