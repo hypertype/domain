@@ -50,7 +50,7 @@ export class ModelProxy<TState, TActions extends IActions<TActions>> {
     }
 
     private GetSubState(state, ...path) {
-        if (!path.length)
+        if (!path.length || !state)
             return state;
         if (Array.isArray(state))
             return this.GetSubState(state.find(s => s.Id == path[0]), ...path.slice(1));

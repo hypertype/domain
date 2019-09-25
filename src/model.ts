@@ -20,7 +20,7 @@ export abstract class Model<TState, TActions> implements IModel<TState, TActions
                 if (res.then) {
                     return res.then(result => {
                         // if (!result)
-                            // this.Update();
+                        // this.Update();
                         resolve(result)
                     }).catch(reject);
                 } else {
@@ -49,6 +49,8 @@ export abstract class Model<TState, TActions> implements IModel<TState, TActions
 
     protected GetSubModel<TState, TActions>(...path: any[]): Model<TState, TActions> {
         const model = this.GetSubState(this, ...path) as Model<TState, TActions>;
+        if (!model)
+            return  null;
         model.Update = this.Update;
         return model;
     }
@@ -58,6 +60,8 @@ export abstract class Model<TState, TActions> implements IModel<TState, TActions
     }
 
     private GetSubState(state, ...path) {
+        if (!state)
+            return null;
         if (!path.length)
             return state;
         if (Array.isArray(state))
