@@ -1,6 +1,17 @@
-import {map, Observable, shareReplay, startWith, Subject, switchMap, take, tap} from "@hypertype/core";
+import {
+    distinctUntilChanged,
+    map,
+    Observable,
+    shareReplay,
+    startWith,
+    Subject,
+    switchMap,
+    take,
+    tap
+} from "@hypertype/core";
 import {ModelStream} from "./model.stream";
 import {IActions} from "./model";
+import * as crc32 from "crc-32";
 
 export class ModelProxy<TState, TActions extends IActions<TActions>> {
 
@@ -13,7 +24,8 @@ export class ModelProxy<TState, TActions extends IActions<TActions>> {
     public State$: Observable<TState> = this.ActionSubject.pipe(
         startWith(null),
         switchMap(_ => this.ShareState$),
-        map(state => this.GetSubState(state, ...this.path)),
+        distinctUntilChanged(null, state => crc32.str(JSON.stringify(state))),
+        map(state => this.GetSubState(state, this.path)),
         shareReplay(1),
     );
 
@@ -49,11 +61,11 @@ export class ModelProxy<TState, TActions extends IActions<TActions>> {
         ]);
     }
 
-    private GetSubState(state, ...path) {
+    private GetSubState(state, path) {
         if (!path.length || !state)
             return state;
         if (Array.isArray(state))
-            return this.GetSubState(state.find(s => s.Id == path[0]), ...path.slice(1));
-        return this.GetSubState(state[path[0]], ...path.slice(1));
+            return this.GetSubState(state.find(s => s.Id == path[0]), path.slice(1));
+        return this.GetSubState(state[path[0]], path.slice(1));
     }
 }

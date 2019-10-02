@@ -47,7 +47,8 @@
   "devDependencies": {
     "@hypertype/core": "^2.0.11",
     "@hypertype/infr": "^2.0.4",
-    "@hypertype/tools": "^2.0.5"
+    "@hypertype/tools": "^2.0.5",
+    "crc-32": "latest"
   },
   "dependencies": {},
   "hypertype": {

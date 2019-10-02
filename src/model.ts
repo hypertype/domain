@@ -1,13 +1,15 @@
-import {map, Observable, shareReplay, startWith, Subject, switchMap, tap} from "@hypertype/core";
+import {distinctUntilChanged, map, Observable, shareReplay, startWith, Subject, switchMap, tap} from "@hypertype/core";
 import {IInvoker} from "./model.stream";
+import * as crc32 from "crc-32";
 
 export abstract class Model<TState, TActions> implements IModel<TState, TActions> {
 
     protected StateSubject$: Subject<void> = new Subject<void>();
 
     public State$: Observable<TState> = this.StateSubject$.asObservable().pipe(
-        startWith(null),
+        startWith(null as void),
         map(() => this.ToJSON()),
+        distinctUntilChanged(null, state => crc32.str(JSON.stringify(state))),
         shareReplay(1),
     );
 
