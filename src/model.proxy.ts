@@ -1,5 +1,5 @@
 import {
-    distinctUntilChanged,
+    distinctUntilChanged, Fn,
     map,
     Observable,
     shareReplay,
@@ -11,7 +11,6 @@ import {
 } from "@hypertype/core";
 import {ModelStream} from "./model.stream";
 import {IActions} from "./model";
-import * as crc32 from "crc-32";
 
 export class ModelProxy<TState, TActions extends IActions<TActions>> {
 
@@ -24,12 +23,12 @@ export class ModelProxy<TState, TActions extends IActions<TActions>> {
     public State$: Observable<TState> = this.ActionSubject.pipe(
         startWith(null),
         switchMap(_ => this.ShareState$),
-        distinctUntilChanged(null, state => crc32.str(JSON.stringify(state))),
+        distinctUntilChanged(null, Fn.crc32),
         map(state => this.GetSubState(state, this.path)),
         shareReplay(1),
     );
 
-    public Actions: TActions = new Proxy({}, {
+    public Actions: TActions = new Proxy({} as TActions, {
         get: (target: TActions, key: keyof TActions, receiver) => {
             return target[key] || (target[key] = (async (...args) => {
                 try {
@@ -48,7 +47,7 @@ export class ModelProxy<TState, TActions extends IActions<TActions>> {
                 }
             }) as any);
         }
-    }) as TActions;
+    }) as any as TActions;
 
     constructor(protected stream: ModelStream<TState, TActions>, private path = []) {
     }

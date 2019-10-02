@@ -39,18 +39,16 @@
       }
     }
   },
-  "bundleDependencies": [
-    "crc-32"
-  ],
+  "bundleDependencies": [],
   "peerDependencies": {
     "@hypertype/infr": "^2.0.0",
     "@hypertype/core": "^2.0.0"
   },
   "devDependencies": {
-    "@hypertype/core": "^2.0.11",
-    "@hypertype/infr": "^2.0.4",
-    "@hypertype/tools": "^2.0.5",
-    "crc-32": "latest"
+    "@hypertype/core": "^2.0.23",
+    "@hypertype/infr": "^2.0.5",
+    "@hypertype/tools": "^2.0.26",
+    "@types/node": "^12.7.9"
   },
   "dependencies": {},
   "hypertype": {
