@@ -1,10 +1,11 @@
 import {IAction, IInvoker, ModelStream} from "../model.stream";
-import {Observable, shareReplay, tap} from "@hypertype/core";
+import {debounceTime, Observable, shareReplay, tap} from "@hypertype/core";
 import {StateLogger} from "@hypertype/infr";
 
 export class DevToolModelStream<TState, TActions> extends ModelStream<TState, TActions> {
     private lastState: TState;
     public State$: Observable<TState> = this.stream.State$.pipe(
+        debounceTime(10),
         tap(state => {
             this.lastState = state;
             this.stateLogger.send({type: 'domain.new-state', payload: null}, state);
@@ -23,8 +24,9 @@ export class DevToolModelStream<TState, TActions> extends ModelStream<TState, TA
                 ...action.path,
                 action.method
             ].join(':'),
-            payload: action.args
-        }, result || this.lastState);
+            payload: action.args,
+            result: result
+        } as any, this.lastState);
         return result;
     };
 

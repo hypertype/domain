@@ -23,7 +23,6 @@ export class ModelProxy<TState, TActions extends IActions<TActions>> {
     public State$: Observable<TState> = this.ActionSubject.pipe(
         startWith(null),
         switchMap(_ => this.ShareState$),
-        tap(console.log),
         distinctUntilChanged(null, Fn.crc32),
         map(state => this.GetSubState(state, this.path)),
         shareReplay(1),
