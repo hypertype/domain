@@ -1,4 +1,4 @@
-import {Container, map, merge, Observable, ReplaySubject,  shareReplay} from "@hypertype/core";
+import {Container, map, merge, Observable, ReplaySubject, shareReplay, tap} from "@hypertype/core";
 import {Model} from "./model";
 
 export class WebworkerEntry {

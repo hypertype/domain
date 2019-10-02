@@ -1,5 +1,17 @@
 import {IAction, IInvoker, ModelStream} from "../model.stream";
-import {filter, first, Fn, fromEvent, InjectionToken, map, mergeMap, Observable, of, throwError} from "@hypertype/core";
+import {
+    filter,
+    first,
+    Fn,
+    fromEvent,
+    InjectionToken,
+    map,
+    mergeMap,
+    Observable,
+    of, shareReplay,
+    tap,
+    throwError
+} from "@hypertype/core";
 
 declare const OffscreenCanvas;
 export const UrlToken = new InjectionToken('webworker');
@@ -15,14 +27,15 @@ export class WebWorkerModelStream<TState, TActions> extends ModelStream<TState, 
 
         // => из Worker пришел ответ -> в Browser Main
         this.Input$ = fromEvent<MessageEvent>(this.worker, 'message').pipe(
-            // tap(console.log),
             map(e => e.data),
+            shareReplay(1)
         );
 
         this.State$ = this.Input$.pipe(
             map(d => d.state),
             filter(Fn.Ib),
-        )
+        );
+        this.State$.subscribe();
     }
 
     protected createWorker(path) {

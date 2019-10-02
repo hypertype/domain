@@ -23,6 +23,7 @@ export class ModelProxy<TState, TActions extends IActions<TActions>> {
     public State$: Observable<TState> = this.ActionSubject.pipe(
         startWith(null),
         switchMap(_ => this.ShareState$),
+        tap(console.log),
         distinctUntilChanged(null, Fn.crc32),
         map(state => this.GetSubState(state, this.path)),
         shareReplay(1),
@@ -37,10 +38,6 @@ export class ModelProxy<TState, TActions extends IActions<TActions>> {
                         method: key,
                         args: args
                     });
-                    if (!res)
-                        this.ActionSubject.next();
-
-                    await this.State$.pipe(take(1)).toPromise();
                     return res;
                 } catch (e) {
                     return Promise.reject(e);
