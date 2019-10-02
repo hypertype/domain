@@ -42,8 +42,7 @@
   "bundleDependencies": [],
   "peerDependencies": {
     "@hypertype/infr": "^2.0.0",
-    "@hypertype/core": "^2.0.0",
-    "crc-32": "latest"
+    "@hypertype/core": "^2.0.0"
   },
   "devDependencies": {
     "@hypertype/core": "^2.0.11",
