@@ -39,7 +39,9 @@
       }
     }
   },
-  "bundleDependencies": [],
+  "bundleDependencies": [
+    "crc-32"
+  ],
   "peerDependencies": {
     "@hypertype/infr": "^2.0.0",
     "@hypertype/core": "^2.0.0"
